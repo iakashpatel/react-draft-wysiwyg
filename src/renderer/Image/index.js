@@ -92,9 +92,9 @@ const getImageComponent = config => class Image extends Component {
         className={classNames(
           'rdw-image-alignment',
           {
-            'rdw-image-left': alignment === 'left',
+            'rdw-image-left': !alignment || alignment === 'left',
             'rdw-image-right': alignment === 'right',
-            'rdw-image-center': !alignment || alignment === 'center',
+            'rdw-image-center': alignment === 'center',
           },
         )}
       >
