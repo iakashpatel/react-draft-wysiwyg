@@ -81,7 +81,7 @@ export default {
       "H5",
       "H6",
       "Blockquote",
-      "Code"
+      "CodeBlock"
     ],
     className: undefined,
     component: undefined,
@@ -342,6 +342,7 @@ export default {
     uploadEnabled: true,
     previewImage: false,
     alignmentEnabled: true,
+    deletionEnabled: true,
     uploadCallback: undefined,
     inputAccept: "image/gif,image/jpeg,image/jpg,image/png,image/svg",
     alt: { present: false, mandatory: false },

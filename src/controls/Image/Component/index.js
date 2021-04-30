@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
-import Option from '../../../components/Option';
-import Spinner from '../../../components/Spinner';
-import './styles.css';
+import Option from "../../../components/Option";
+import Spinner from "../../../components/Spinner";
+import "./styles.css";
 
 class LayoutComponent extends Component {
   static propTypes = {
@@ -17,27 +17,27 @@ class LayoutComponent extends Component {
   };
 
   state = {
-    imgSrc: '',
+    imgSrc: "",
     dragEnter: false,
     uploadHighlighted:
       this.props.config.uploadEnabled && !!this.props.config.uploadCallback,
     showImageLoading: false,
     height: this.props.config.defaultSize.height,
     width: this.props.config.defaultSize.width,
-    alt: '',
+    alt: "",
   };
 
   componentDidUpdate(prevProps) {
     const { config } = this.props;
     if (prevProps.expanded && !this.props.expanded) {
       this.setState({
-        imgSrc: '',
+        imgSrc: "",
         dragEnter: false,
         uploadHighlighted: config.uploadEnabled && !!config.uploadCallback,
         showImageLoading: false,
         height: config.defaultSize.height,
         width: config.defaultSize.width,
-        alt: '',
+        alt: "",
       });
     } else if (
       config.uploadCallback !== prevProps.config.uploadCallback ||
@@ -49,14 +49,14 @@ class LayoutComponent extends Component {
     }
   }
 
-  onDragEnter = event => {
+  onDragEnter = (event) => {
     this.stopPropagation(event);
     this.setState({
       dragEnter: true,
     });
   };
 
-  onImageDrop = event => {
+  onImageDrop = (event) => {
     event.preventDefault();
     event.stopPropagation();
     this.setState({
@@ -76,8 +76,9 @@ class LayoutComponent extends Component {
     }
     for (let i = 0; i < data.length; i += 1) {
       if (
-        (!dataIsItems || data[i].kind === 'file') &&
-        data[i].type.match('^image/')
+        (!dataIsItems || data[i].kind === "file") &&
+        data[i].type.match("^image/") &&
+        this.validImageType(data[i].type)
       ) {
         const file = dataIsItems ? data[i].getAsFile() : data[i];
         this.uploadImage(file);
@@ -91,15 +92,23 @@ class LayoutComponent extends Component {
     });
   };
 
+  validImageType = (type) => {
+    const {
+      config: { inputAccept },
+    } = this.props;
+
+    return inputAccept.includes(type);
+  };
+
   addImageFromState = () => {
     const { imgSrc, alt } = this.state;
     let { height, width } = this.state;
     const { onChange } = this.props;
     if (!isNaN(height)) {
-      height += 'px';
+      height += "px";
     }
     if (!isNaN(width)) {
-      width += 'px';
+      width += "px";
     }
     onChange(imgSrc, height, width, alt);
   };
@@ -117,19 +126,19 @@ class LayoutComponent extends Component {
     });
   };
 
-  updateValue = event => {
+  updateValue = (event) => {
     this.setState({
       [`${event.target.name}`]: event.target.value,
     });
   };
 
-  selectImage = event => {
+  selectImage = (event) => {
     if (event.target.files && event.target.files.length > 0) {
       this.uploadImage(event.target.files[0]);
     }
   };
 
-  uploadImage = file => {
+  uploadImage = (file) => {
     this.toggleShowImageLoading();
     const { uploadCallback } = this.props.config;
     uploadCallback(file)
@@ -149,12 +158,12 @@ class LayoutComponent extends Component {
       });
   };
 
-  fileUploadClick = event => {
+  fileUploadClick = (event) => {
     this.fileUpload = true;
     event.stopPropagation();
   };
 
-  stopPropagation = event => {
+  stopPropagation = (event) => {
     if (!this.fileUpload) {
       event.preventDefault();
       event.stopPropagation();
@@ -188,7 +197,7 @@ class LayoutComponent extends Component {
     } = this.props;
     return (
       <div
-        className={classNames('rdw-image-modal', popupClassName)}
+        className={classNames("rdw-image-modal", popupClassName)}
         onClick={this.stopPropagation}
       >
         <div className="rdw-image-modal-header">
@@ -197,10 +206,10 @@ class LayoutComponent extends Component {
               onClick={this.showImageUploadOption}
               className="rdw-image-modal-header-option"
             >
-              {translations['components.controls.image.fileUpload']}
+              {translations["components.controls.image.fileUpload"]}
               <span
-                className={classNames('rdw-image-modal-header-label', {
-                  'rdw-image-modal-header-label-highlighted': uploadHighlighted,
+                className={classNames("rdw-image-modal-header-label", {
+                  "rdw-image-modal-header-label-highlighted": uploadHighlighted,
                 })}
               />
             </span>
@@ -210,10 +219,10 @@ class LayoutComponent extends Component {
               onClick={this.showImageURLOption}
               className="rdw-image-modal-header-option"
             >
-              {translations['components.controls.image.byURL']}
+              {translations["components.controls.image.byURL"]}
               <span
-                className={classNames('rdw-image-modal-header-label', {
-                  'rdw-image-modal-header-label-highlighted': !uploadHighlighted,
+                className={classNames("rdw-image-modal-header-label", {
+                  "rdw-image-modal-header-label-highlighted": !uploadHighlighted,
                 })}
               />
             </span>
@@ -225,8 +234,8 @@ class LayoutComponent extends Component {
               onDragEnter={this.onDragEnter}
               onDragOver={this.stopPropagation}
               onDrop={this.onImageDrop}
-              className={classNames('rdw-image-modal-upload-option', {
-                'rdw-image-modal-upload-option-highlighted': dragEnter,
+              className={classNames("rdw-image-modal-upload-option", {
+                "rdw-image-modal-upload-option-highlighted": dragEnter,
               })}
             >
               <label
@@ -241,7 +250,7 @@ class LayoutComponent extends Component {
                   />
                 ) : (
                   imgSrc ||
-                  translations['components.controls.image.dropFileText']
+                  translations["components.controls.image.dropFileText"]
                 )}
               </label>
             </div>
@@ -257,7 +266,7 @@ class LayoutComponent extends Component {
           <div className="rdw-image-modal-url-section">
             <input
               className="rdw-image-modal-url-input"
-              placeholder={translations['components.controls.image.enterlink']}
+              placeholder={translations["components.controls.image.enterlink"]}
               name="imgSrc"
               onChange={this.updateValue}
               onBlur={this.updateValue}
@@ -278,7 +287,7 @@ class LayoutComponent extends Component {
               placeholder="alt"
             />
             <span className="rdw-image-mandatory-sign">
-              {altConf.mandatory && '*'}
+              {altConf.mandatory && "*"}
             </span>
           </div>
         )}
@@ -312,19 +321,17 @@ class LayoutComponent extends Component {
               !imgSrc || !height || !width || (altConf.mandatory && !alt)
             }
           >
-            {translations['generic.add']}
+            {translations["generic.add"]}
           </button>
           <button className="rdw-image-modal-btn" onClick={doCollapse}>
-            {translations['generic.cancel']}
+            {translations["generic.cancel"]}
           </button>
         </span>
         {showImageLoading ? (
           <div className="rdw-image-modal-spinner">
             <Spinner />
           </div>
-        ) : (
-          undefined
-        )}
+        ) : undefined}
       </div>
     );
   }
@@ -347,7 +354,7 @@ class LayoutComponent extends Component {
           className={classNames(className)}
           value="unordered-list-item"
           onClick={onExpandEvent}
-          title={title || translations['components.controls.image.image']}
+          title={title || translations["components.controls.image.image"]}
         >
           <img src={icon} alt="" />
         </Option>

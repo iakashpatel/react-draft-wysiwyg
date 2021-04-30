@@ -14,7 +14,7 @@
   justify-content: center;
 }
 .rdw-right-aligned-block {
-  text-align: right;
+  text-align: right !important;
 }
 .rdw-left-aligned-block {
   text-align: left !important;

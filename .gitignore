@@ -1,7 +1,7 @@
 node_modules
 .DS_Store
 npm-debug.log
-dist
+dist/react-draft-wysiwyg.js
 docs/.yalc/
 docs/yalc.lock
 stats.json

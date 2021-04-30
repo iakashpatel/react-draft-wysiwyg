@@ -1,122 +1,170 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { EditorState } from 'draft-js';
-import classNames from 'classnames';
-import Option from '../../components/Option';
-import './styles.css';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { EditorState, SelectionState, Modifier } from "draft-js";
+import classNames from "classnames";
+import Option from "../../components/Option";
+import "./styles.css";
 
-const getImageComponent = config => class Image extends Component {
-  static propTypes: Object = {
-    block: PropTypes.object,
-    contentState: PropTypes.object,
-  };
+const getImageComponent = (config) =>
+  class Image extends Component {
+    static propTypes: Object = {
+      block: PropTypes.object,
+      contentState: PropTypes.object,
+    };
 
-  state: Object = {
-    hovered: false,
-  };
+    state: Object = {
+      hovered: false,
+    };
 
-  setEntityAlignmentLeft: Function = (): void => {
-    this.setEntityAlignment('left');
-  };
+    removeEntity = () => {
+      const { block, contentState } = this.props;
 
-  setEntityAlignmentRight: Function = (): void => {
-    this.setEntityAlignment('right');
-  };
+      const blockKey = block.getKey();
+      const afterKey = contentState.getKeyAfter(blockKey);
+      const targetRange = new SelectionState({
+        anchorKey: blockKey,
+        anchorOffset: 0,
+        focusKey: afterKey,
+        focusOffset: 0,
+      });
+      let newContentState = Modifier.setBlockType(
+        contentState,
+        targetRange,
+        "unstyled"
+      );
 
-  setEntityAlignmentCenter: Function = (): void => {
-    this.setEntityAlignment('center');
-  };
+      newContentState = Modifier.removeRange(
+        newContentState,
+        targetRange,
+        "backward"
+      );
+      config.onChange(
+        EditorState.push(
+          config.getEditorState(),
+          newContentState,
+          "remove-range"
+        )
+      );
+    };
 
-  setEntityAlignment: Function = (alignment): void => {
-    const { block, contentState } = this.props;
-    const entityKey = block.getEntityAt(0);
-    contentState.mergeEntityData(
-      entityKey,
-      { alignment },
-    );
-    config.onChange(EditorState.push(config.getEditorState(), contentState, 'change-block-data'));
-    this.setState({
-      dummy: true,
-    });
-  };
+    setEntityAlignmentLeft: Function = (): void => {
+      this.setEntityAlignment("left");
+    };
 
-  toggleHovered: Function = (): void => {
-    this.setState(prevState => ({
-      hovered: !prevState.hovered,
-    }));
-  };
+    setEntityAlignmentRight: Function = (): void => {
+      this.setEntityAlignment("right");
+    };
 
-  renderAlignmentOptions(alignment): Object {
-    return (
-      <div
-        className={classNames(
-          'rdw-image-alignment-options-popup',
-          {
-            'rdw-image-alignment-options-popup-right': alignment === 'right',
-          },
-        )}
-      >
+    setEntityAlignmentCenter: Function = (): void => {
+      this.setEntityAlignment("center");
+    };
+
+    setEntityAlignment: Function = (alignment): void => {
+      const { block, contentState } = this.props;
+      const entityKey = block.getEntityAt(0);
+      contentState.mergeEntityData(entityKey, { alignment });
+      config.onChange(
+        EditorState.push(
+          config.getEditorState(),
+          contentState,
+          "change-block-data"
+        )
+      );
+      this.setState({
+        dummy: true,
+      });
+    };
+
+    toggleHovered: Function = (): void => {
+      this.setState((prevState) => ({
+        hovered: !prevState.hovered,
+      }));
+    };
+
+    renderAlignmentOptions() {
+      return (
+        <React.Fragment>
+          <Option
+            onClick={this.setEntityAlignmentLeft}
+            className="rdw-image-alignment-option"
+          >
+            L
+          </Option>
+          <Option
+            onClick={this.setEntityAlignmentCenter}
+            className="rdw-image-alignment-option"
+          >
+            C
+          </Option>
+          <Option
+            onClick={this.setEntityAlignmentRight}
+            className="rdw-image-alignment-option"
+          >
+            R
+          </Option>
+        </React.Fragment>
+      );
+    }
+
+    renderDeletionOption() {
+      return (
         <Option
-          onClick={this.setEntityAlignmentLeft}
-          className="rdw-image-alignment-option"
+          onClick={this.removeEntity}
+          className="rdw-image-deletion-option"
         >
-          L
+          X
         </Option>
-        <Option
-          onClick={this.setEntityAlignmentCenter}
-          className="rdw-image-alignment-option"
-        >
-          C
-        </Option>
-        <Option
-          onClick={this.setEntityAlignmentRight}
-          className="rdw-image-alignment-option"
-        >
-          R
-        </Option>
-      </div>
-    );
-  }
+      );
+    }
 
-  render(): Object {
-    const { block, contentState } = this.props;
-    const { hovered } = this.state;
-    const { isReadOnly, isImageAlignmentEnabled } = config;
-    const entity = contentState.getEntity(block.getEntityAt(0));
-    const { src, alignment, height, width, alt } = entity.getData();
+    render(): Object {
+      const { block, contentState } = this.props;
+      const { hovered } = this.state;
+      const {
+        isReadOnly,
+        isImageAlignmentEnabled,
+        isImageDeletionEnabled,
+      } = config;
+      const entity = contentState.getEntity(block.getEntityAt(0));
+      const { src, alignment, height, width, alt } = entity.getData();
+      const isAlignmentEnabled = isImageAlignmentEnabled();
+      const isDeletionEnabled = isImageDeletionEnabled();
 
-    return (
-      <span
-        onMouseEnter={this.toggleHovered}
-        onMouseLeave={this.toggleHovered}
-        className={classNames(
-          'rdw-image-alignment',
-          {
-            'rdw-image-left': !alignment || alignment === 'left',
-            'rdw-image-right': alignment === 'right',
-            'rdw-image-center': alignment === 'center',
-          },
-        )}
-      >
-        <span className="rdw-image-imagewrapper">
-          <img
-            src={src}
-            alt={alt}
-            style={{
-              height,
-              width,
-            }}
-          />
-          {
-            !isReadOnly() && hovered && isImageAlignmentEnabled() ?
-              this.renderAlignmentOptions(alignment)
-              :
-              undefined
-          }
+      return (
+        <span
+          onMouseEnter={this.toggleHovered}
+          onMouseLeave={this.toggleHovered}
+          className={classNames("rdw-image", {
+            "rdw-image-left": !alignment || alignment === "left",
+            "rdw-image-right": alignment === "right",
+            "rdw-image-center": alignment === "center",
+          })}
+        >
+          <span className="rdw-image-imagewrapper">
+            <img
+              src={src}
+              alt={alt}
+              style={{
+                height,
+                width,
+              }}
+            />
+          </span>
+          {!isReadOnly() &&
+          hovered &&
+          (isAlignmentEnabled || isDeletionEnabled) ? (
+            <div
+              className={classNames("rdw-image-options-popup", {
+                "rdw-image-options-popup-right": alignment === "right",
+              })}
+            >
+              {isAlignmentEnabled ? this.renderAlignmentOptions() : false}
+              {isDeletionEnabled ? this.renderDeletionOption() : false}
+            </div>
+          ) : undefined}
         </span>
-      </span>
-    );
-  }
-};
+      );
+    }
+  };
 
 export default getImageComponent;
