@@ -68,7 +68,7 @@ class LayoutComponent extends Component {
       displayName: translations['components.controls.blocktype.blockquote'],
     },
     {
-      label: 'CodeBlock',
+      label: 'Code',
       displayName: translations['components.controls.blocktype.code'],
     },
   ];
