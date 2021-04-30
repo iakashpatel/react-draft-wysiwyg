@@ -3,6 +3,8 @@
   background: white;
   display: flex;
   padding: 5px 2px;
+  align-items: center;
+  justify-content: center;
   border-radius: 2px;
   border: 1px solid #f1f1f1;
   width: 105px;
@@ -33,9 +35,6 @@
 .rdw-image-right {
   display: flex;
   justify-content: flex-end;
-}
-.rdw-image-options-popup-right {
-  right: 0;
 }
 .rdw-option-left {
   justify-content: flex-start;

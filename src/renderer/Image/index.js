@@ -86,19 +86,19 @@ const getImageComponent = (config) =>
         <React.Fragment>
           <Option
             onClick={this.setEntityAlignmentLeft}
-            className="rdw-image-alignment-option"
+            className="rdw-image-alignment-option image-left-align-option"
           >
             L
           </Option>
           <Option
             onClick={this.setEntityAlignmentCenter}
-            className="rdw-image-alignment-option"
+            className="rdw-image-alignment-option image-center-align-option"
           >
             C
           </Option>
           <Option
             onClick={this.setEntityAlignmentRight}
-            className="rdw-image-alignment-option"
+            className="rdw-image-alignment-option image-right-align-option"
           >
             R
           </Option>
