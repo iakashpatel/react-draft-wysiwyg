@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
-import { stopPropagation } from '../../../utils/common';
-import Option from '../../../components/Option';
-import './styles.css';
+import { stopPropagation } from "../../../utils/common";
+import Option from "../../../components/Option";
+import "./styles.css";
 
 class LayoutComponent extends Component {
   static propTypes = {
@@ -17,19 +17,20 @@ class LayoutComponent extends Component {
   };
 
   state = {
-    currentStyle: 'color',
+    currentStyle: "color",
+    customColor: "",
   };
 
   componentDidUpdate(prevProps) {
     const { expanded } = this.props;
     if (expanded && !prevProps.expanded) {
       this.setState({
-        currentStyle: 'color',
+        currentStyle: "color",
       });
     }
   }
 
-  onChange = color => {
+  onChange = (color) => {
     const { onChange } = this.props;
     const { currentStyle } = this.state;
     onChange(currentStyle, color);
@@ -37,15 +38,24 @@ class LayoutComponent extends Component {
 
   setCurrentStyleColor = () => {
     this.setState({
-      currentStyle: 'color',
+      currentStyle: "color",
     });
   };
 
   setCurrentStyleBgcolor = () => {
     this.setState({
-      currentStyle: 'bgcolor',
+      currentStyle: "bgcolor",
     });
   };
+
+  isHexColor(hex) {
+    return (
+      typeof hex === "string" &&
+      hex.length === 7 &&
+      hex.startsWith("#") &&
+      !isNaN(Number("0x" + hex.substr(1, hex.length)))
+    );
+  }
 
   renderModal = () => {
     const {
@@ -54,34 +64,39 @@ class LayoutComponent extends Component {
       translations,
     } = this.props;
     const { currentStyle } = this.state;
-    const currentSelectedColor = currentStyle === 'color' ? color : bgColor;
+    const currentSelectedColor = currentStyle === "color" ? color : bgColor;
     return (
       <div
-        className={classNames('rdw-colorpicker-modal', popupClassName)}
+        className={classNames("rdw-colorpicker-modal", popupClassName)}
         onClick={stopPropagation}
       >
         <span className="rdw-colorpicker-modal-header">
           <span
-            className={classNames('rdw-colorpicker-modal-style-label', {
-              'rdw-colorpicker-modal-style-label-active':
-                currentStyle === 'color',
+            className={classNames("rdw-colorpicker-modal-style-label", {
+              "rdw-colorpicker-modal-style-label-active":
+                currentStyle === "color",
             })}
             onClick={this.setCurrentStyleColor}
           >
-            {translations['components.controls.colorpicker.text']}
+            {translations["components.controls.colorpicker.text"]}
           </span>
           <span
-            className={classNames('rdw-colorpicker-modal-style-label', {
-              'rdw-colorpicker-modal-style-label-active':
-                currentStyle === 'bgcolor',
+            className={classNames("rdw-colorpicker-modal-style-label", {
+              "rdw-colorpicker-modal-style-label-active":
+                currentStyle === "bgcolor",
             })}
             onClick={this.setCurrentStyleBgcolor}
           >
-            {translations['components.controls.colorpicker.background']}
+            {translations["components.controls.colorpicker.background"]}
           </span>
         </span>
         <span className="rdw-colorpicker-modal-options">
-          {colors.map((c, index) => (
+          {[
+            ...colors,
+            ...(this.isHexColor(this.state.customColor)
+              ? [this.state.customColor]
+              : []),
+          ].map((c, index) => (
             <Option
               value={c}
               key={index}
@@ -97,6 +112,24 @@ class LayoutComponent extends Component {
             </Option>
           ))}
         </span>
+
+        <input
+          name="customColor"
+          className="custom-color-input"
+          value={this.state.customColor}
+          onChange={(e) => this.setState({ customColor: e.target.value })}
+        />
+
+        <button
+          className="custom-color-save-button"
+          type="button"
+          onClick={() =>
+            this.isHexColor(this.state.customColor) &&
+            this.onChange(this.state.customColor)
+          }
+        >
+          Done
+        </button>
       </div>
     );
   };
@@ -115,7 +148,7 @@ class LayoutComponent extends Component {
         aria-expanded={expanded}
         aria-label="rdw-color-picker"
         title={
-          title || translations['components.controls.colorpicker.colorpicker']
+          title || translations["components.controls.colorpicker.colorpicker"]
         }
       >
         <Option onClick={onExpandEvent} className={classNames(className)}>
