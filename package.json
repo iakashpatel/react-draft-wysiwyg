@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.6",
-    "draftjs-utils": "git+https://github.com/iakashpatel/draftjs-utils.git#adf59fb1470e1b15f07ea9b01a69bfa0914296ff",
+    "draftjs-utils": "git+https://github.com/iakashpatel/draftjs-utils.git#8eff8380639700cb9f5fb8a8bfea2c41cdb65e3a",
     "html-to-draftjs": "^1.5.0",
     "linkify-it": "^2.2.0",
     "prop-types": "^15.7.2"
