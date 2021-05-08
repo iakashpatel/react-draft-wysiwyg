@@ -22,7 +22,7 @@
     "cross-env": "^6.0.3",
     "css-loader": "^3.2.1",
     "draft-js": "^0.11.7",
-    "draftjs-to-html": "git+https://github.com/iakashpatel/draftjs-to-html.git#fb56b43130b9dcb96e500b681d912334b8ea4d07",
+    "draftjs-to-html": "git+https://github.com/iakashpatel/draftjs-to-html.git#cd2df0154ae04afdcaf2aed7fbfdc9b6cab4cced",
     "draftjs-to-markdown": "^0.6.0",
     "embed-video": "^2.0.4",
     "enzyme": "^3.10.0",
