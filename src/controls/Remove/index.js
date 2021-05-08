@@ -67,6 +67,7 @@ export default class Remove extends Component {
       'FONTFAMILY',
       'COLOR',
       'BGCOLOR',
+      'PADDING'
     ]);
     forEach(customStyles, (key, value) => {
       if (value) {
