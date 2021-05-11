@@ -123,12 +123,12 @@ class LayoutComponent extends Component {
           doCollapse={doCollapse}
           onExpandEvent={onExpandEvent}
           title={
-            title || translations['components.controls.blocktype.blocktype']
+            title || translations['components.controls.blocktype.normal']
           }
         >
           <span>
             {currentLabel ||
-              translations['components.controls.blocktype.blocktype']}
+              translations['components.controls.blocktype.normal']}
           </span>
           {blocks.map((block, index) => (
             <DropdownOption
